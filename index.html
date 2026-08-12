@@ -325,9 +325,9 @@ h1,h2{font-family:'Fraunces',serif;font-weight:600;letter-spacing:.01em}
         <div><label>Województwo</label><input type="text" id="m-woj" placeholder="lubelskie"></div>
       </div>
 
-      <label>Nazwa pliku zdjęcia <span class="opt">— opcjonalnie, wrzucisz je do folderu img/</span></label>
+      <label>Nazwa pliku zdjęcia <span class="opt">— opcjonalnie, wrzucisz je do folderu miejscowości</span></label>
       <input type="text" id="m-zdjecie" placeholder="np. siedliszcze.jpg">
-      <div class="filehint">wpisz samą nazwę pliku; trafi do <span class="mono">img/</span> w folderze miejscowości</div>
+      <div class="filehint">wpisz samą nazwę pliku; trafi do folderu Twojej miejscowości, obok dane.json</div>
 
       <label>Opis miejscowości</label>
       <textarea id="m-opis" placeholder="Krótki opis miejscowości…"></textarea>
@@ -959,7 +959,7 @@ function generuj(){
     <b>Co zrobić z tym plikiem:</b><br>
     1. Kliknij <b>Pobierz dane.json</b> powyżej.<br>
     2. Na GitHubie utwórz plik <code>dane/${s}/dane.json</code> i wklej/wgraj pobraną zawartość.<br>
-    3. Zdjęcia wrzuć do <code>dane/${s}/img/</code>, a nagrania do <code>dane/${s}/audio/</code> (pod nazwami, które wpisałeś).<br>
+    3. Zdjęcia i nagrania wrzuć do <code>dane/${s}/</code> — obok pliku dane.json (pod nazwami, które wpisałeś).<br>
     4. Dopisz <code>"${s}"</code> do pliku <code>miejscowosci.json</code>.<br>
     5. Commit — miejscowość pojawi się na mapie.`;
 }
