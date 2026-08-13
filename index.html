@@ -298,7 +298,7 @@ h1,h2{font-family:'Fraunces',serif;font-weight:600;letter-spacing:.01em}
     </div>
     <div>
       <input type="file" id="file-load" accept=".json" class="hidden">
-      <button class="load-btn" onclick="document.getElementById('file-load').click()">📂 Wczytaj istniejący dane.json</button>
+      <button class="load-btn" id="load-caly-btn" onclick="document.getElementById('file-load').click()">📂 Wczytaj istniejący dane.json</button>
     </div>
   </div>
 
@@ -413,6 +413,9 @@ function pokazEkran(nazwa){
   if(nazwa === 'edytor'){
     if(!mapaZainicjowana){ initMapaM(); mapaZainicjowana = true; }
     setTimeout(()=>{ if(mapaM) mapaM.invalidateSize(); }, 80);
+    // przycisk wczytywania widoczny tylko na kroku 1
+    const loadBtn = document.getElementById('load-caly-btn');
+    if(loadBtn) loadBtn.style.display = (krok===0) ? '' : 'none';
   }
 }
 
@@ -464,6 +467,9 @@ function idzDo(nr){
     c.classList.toggle('active', i===nr);
     c.classList.toggle('done', i<nr);
   });
+  // przycisk wczytywania całego pliku tylko na kroku 1 (Miejscowość)
+  const loadBtn = document.getElementById('load-caly-btn');
+  if(loadBtn) loadBtn.style.display = (nr===0) ? '' : 'none';
   if(nr===1) renderArtysci();
   if(nr===2) renderTworczosc();
   if(nr===3) generuj();
@@ -588,7 +594,11 @@ function renderTworczosc(){
     wrap.appendChild(tomikiBox);
     const addTomik = document.createElement('div');
     addTomik.className='add-line sep-top';
-    addTomik.innerHTML = `<button class="btn mini" onclick="dodajTomik('${a._id}')">➕ Dodaj tomik</button>`;
+    addTomik.innerHTML = `
+      <button class="btn mini" onclick="dodajTomik('${a._id}')">➕ Dodaj tomik</button>
+      <button class="btn mini" onclick="document.getElementById('wczytaj-tomik-${a._id}').click()">📥 Wczytaj tomik .json</button>
+      <input type="file" id="wczytaj-tomik-${a._id}" accept=".json" class="hidden" onchange="wczytajTomikDoArtysty('${a._id}', this)">
+    `;
     wrap.appendChild(addTomik);
 
     // --- LUŹNE WIERSZE ---
@@ -616,6 +626,58 @@ function dodajTomik(artId){
   const a = model.artysci.find(x=>x._id===artId);
   a.tomiki.push({ _id:nowyId(), tytul:'', okladka:'', miejsce:null, wiersze:[] });
   renderTworczosc();
+}
+
+/* wczytuje POJEDYNCZY tomik (z Wierszownika) i dokłada go do wskazanego artysty,
+   nie ruszając reszty formularza */
+function wczytajTomikDoArtysty(artId, input){
+  const plik = input.files[0];
+  if(!plik){ return; }
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const obj = JSON.parse(r.result);
+      // wyciągnij tomik — akceptuj sam tomik {tytul,wiersze} albo pełny dane.json
+      let tomikSrc = null;
+      if(obj && Array.isArray(obj.wiersze) && typeof obj.tytul !== 'undefined'){
+        tomikSrc = obj;                       // pojedynczy tomik z Wierszownika
+      } else if(obj && Array.isArray(obj.tomiki) && obj.tomiki.length){
+        tomikSrc = obj.tomiki[0];             // gdyby ktoś wrzucił {tomiki:[...]}
+      } else if(obj && Array.isArray(obj.artysci) && obj.artysci.length){
+        // pełny dane.json — weź pierwszy tomik pierwszego artysty
+        const art = obj.artysci.find(a => Array.isArray(a.tomiki) && a.tomiki.length);
+        if(art) tomikSrc = art.tomiki[0];
+      }
+      if(!tomikSrc){
+        alert('Nie znalazłem tomiku w tym pliku. Wczytaj plik tomiku pobrany z Wierszownika.');
+        input.value=''; return;
+      }
+      const a = model.artysci.find(x=>x._id===artId);
+      if(!a){ input.value=''; return; }
+      // zbuduj tomik w formacie formularza
+      const nowy = {
+        _id: nowyId(),
+        tytul: tomikSrc.tytul || '',
+        okladka: '',
+        miejsce: null,
+        wiersze: (tomikSrc.wiersze||[]).map(w => ({
+          _id: nowyId(),
+          tytul: w.tytul || '',
+          tresc: w.tresc || w.tekst || '',
+          data_powstania:'', zrodlo:'', audio:'', miejsca:[]
+        }))
+      };
+      a.tomiki.push(nowy);
+      renderTworczosc();
+      const ileW = nowy.wiersze.length;
+      alert('Dodano tomik „' + (nowy.tytul||'bez tytułu') + '" (' + ileW + ' ' +
+            (ileW===1?'wiersz':'wierszy') + ') do artysty. Uzupełnij okładkę i miejsca na mapie, jeśli chcesz.');
+    }catch(err){
+      alert('To nie jest poprawny plik JSON.');
+    }
+    input.value='';
+  };
+  r.readAsText(plik);
 }
 function usunTomik(artId,tomId){
   const a = model.artysci.find(x=>x._id===artId);
