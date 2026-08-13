@@ -104,6 +104,47 @@
   .sub-block .sub-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px}
   .sub-block .sub-head .nm{font-family:'Fraunces',serif;font-size:16px;color:var(--parchment)}
   .sub-block.nested{background:rgba(15,15,24,.4);border-color:rgba(201,162,39,.25);margin-left:6px}
+
+  /* krok 3 — jeden artysta naraz */
+  .artysta-licznik{
+    text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;
+    color:var(--gold-soft);letter-spacing:.05em;margin:4px 0 14px;opacity:.85;
+  }
+  .artysta-licznik b{color:var(--parchment)}
+  .sub-block.artysta-glowny{
+    border:1px solid rgba(201,162,39,.35);
+    border-left:4px solid var(--gold);
+    background:rgba(15,15,24,.35);
+  }
+  .sub-block.artysta-glowny > .sub-head{
+    margin:-16px -16px 14px;padding:14px 16px;
+    background:linear-gradient(90deg,rgba(201,162,39,.15),rgba(201,162,39,.03));
+    border-bottom:1px solid rgba(201,162,39,.25);
+    border-radius:2px 2px 0 0;
+  }
+  .sub-block.artysta-glowny > .sub-head .nm{
+    font-size:19px;color:var(--gold-soft);
+    text-shadow:0 0 8px rgba(201,162,39,.25);
+  }
+  /* nawigacja strzałkami */
+  .artysta-nawig{
+    display:flex;justify-content:space-between;gap:14px;
+    margin-top:28px;padding-top:20px;
+    border-top:2px solid rgba(201,162,39,.25);
+  }
+  .nawig-btn{
+    flex:1;max-width:48%;text-align:left;cursor:pointer;
+    background:rgba(201,162,39,.08);border:1.5px solid rgba(201,162,39,.4);
+    border-radius:10px;padding:14px 18px;color:var(--parchment);
+    font-family:'Fraunces',serif;font-size:15px;font-weight:500;line-height:1.4;
+    transition:all .2s ease;
+  }
+  .nawig-btn:hover{background:rgba(201,162,39,.18);border-color:var(--gold);transform:translateY(-2px)}
+  .nawig-nast{text-align:right}
+  .nawig-imie{
+    font-family:'Literata',serif;font-style:italic;font-size:13px;
+    color:var(--gold-soft);font-weight:400;
+  }
   .tomik-block{border-top:3px solid rgba(201,162,39,.4)!important}
   .tomik-block + .tomik-block{margin-top:34px;position:relative}
   .tomik-block + .tomik-block::before,
@@ -571,6 +612,8 @@ function setArt(id,pole,wart){
 /* =========================================================
    KROK 3 — TWÓRCZOŚĆ (tomiki + luźne wiersze)
    ========================================================= */
+let aktualnyArtysta = 0;
+
 function renderTworczosc(){
   const box = document.getElementById('tworczosc-lista');
   // przerysowanie niszczy stare mapy — czyścimy rejestr, żeby odtworzyły się na nowo
@@ -581,10 +624,26 @@ function renderTworczosc(){
     box.innerHTML = '<div class="empty-note">Najpierw dodaj artystów w kroku 2.</div>';
     return;
   }
-  model.artysci.forEach(a=>{
+  // pilnuj zakresu indeksu
+  if(aktualnyArtysta >= model.artysci.length) aktualnyArtysta = model.artysci.length - 1;
+  if(aktualnyArtysta < 0) aktualnyArtysta = 0;
+
+  const ilu = model.artysci.length;
+
+  // licznik "Artysta X z Y" (tylko gdy więcej niż jeden)
+  if(ilu > 1){
+    const licznik = document.createElement('div');
+    licznik.className = 'artysta-licznik';
+    licznik.innerHTML = `Artysta <b>${aktualnyArtysta+1}</b> z <b>${ilu}</b>`;
+    box.appendChild(licznik);
+  }
+
+  // renderuj TYLKO bieżącego artystę
+  const a = model.artysci[aktualnyArtysta];
+  {
     const wrap = document.createElement('div');
-    wrap.className = 'sub-block';
-    wrap.innerHTML = `<div class="sub-head"><span class="nm">${esc(a.imie_nazwisko)||'(artysta bez nazwiska)'}</span></div>`;
+    wrap.className = 'sub-block artysta-glowny';
+    wrap.innerHTML = `<div class="sub-head"><span class="nm">👤 ${esc(a.imie_nazwisko)||'(artysta bez nazwiska)'}</span></div>`;
 
     // --- TOMIKI ---
     const tomikiBox = document.createElement('div');
@@ -618,7 +677,33 @@ function renderTworczosc(){
     wrap.appendChild(addLuzny);
 
     box.appendChild(wrap);
-  });
+  }
+
+  // --- NAWIGACJA MIĘDZY ARTYSTAMI (strzałki) ---
+  if(ilu > 1){
+    const nawig = document.createElement('div');
+    nawig.className = 'artysta-nawig';
+    const poprzExists = aktualnyArtysta > 0;
+    const nastExists = aktualnyArtysta < ilu - 1;
+    const poprzImie = poprzExists ? (model.artysci[aktualnyArtysta-1].imie_nazwisko || 'artysta') : '';
+    const nastImie  = nastExists ? (model.artysci[aktualnyArtysta+1].imie_nazwisko || 'artysta') : '';
+    nawig.innerHTML = `
+      ${poprzExists
+        ? `<button class="nawig-btn" onclick="przejdzArtysta(-1)">← Poprzedni artysta<br><span class="nawig-imie">${esc(poprzImie)}</span></button>`
+        : `<span></span>`}
+      ${nastExists
+        ? `<button class="nawig-btn nawig-nast" onclick="przejdzArtysta(1)">Następny artysta →<br><span class="nawig-imie">${esc(nastImie)}</span></button>`
+        : `<span></span>`}
+    `;
+    box.appendChild(nawig);
+  }
+}
+
+/* przełącza edytowanego artystę (zapisuje bieżące wpisy przez inputy on-the-fly) */
+function przejdzArtysta(kierunek){
+  aktualnyArtysta += kierunek;
+  renderTworczosc();
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 /* --- TOMIK --- */
