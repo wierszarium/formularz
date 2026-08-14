@@ -202,6 +202,79 @@
   }
   .miejsce-z-tomiku b{color:var(--parchment)}
   .hidden{display:none!important}
+  /* ===== SAMOUCZEK — plansza wjeżdżająca od dołu ===== */
+  .pomoc-znak{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:20px;height:20px;margin-left:8px;vertical-align:middle;
+    border-radius:50%;background:rgba(201,162,39,.15);
+    border:1.5px solid var(--gold);color:var(--gold-soft);
+    font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+    cursor:pointer;transition:all .2s ease;user-select:none;
+  }
+  .pomoc-znak:hover{background:var(--gold);color:var(--lead);transform:scale(1.15)}
+
+  .pomoc-overlay{
+    position:fixed;inset:0;z-index:9500;
+    background:rgba(20,22,28,.75);backdrop-filter:blur(4px);
+    opacity:0;pointer-events:none;transition:opacity .3s ease;
+  }
+  .pomoc-overlay.on{opacity:1;pointer-events:auto}
+
+  .pomoc-plansza{
+    position:fixed;left:50%;top:50%;
+    transform:translate(-50%,140%);
+    width:min(720px,92vw);max-height:70vh;overflow-y:auto;z-index:9501;
+    background:linear-gradient(180deg,#2b2f36 0%,#20242a 100%);
+    border:1px solid rgba(201,162,39,.45);
+    border-radius:18px;
+    box-shadow:0 20px 60px rgba(0,0,0,.6);
+    transition:transform .42s cubic-bezier(.2,.9,.3,1);
+    padding:0;
+  }
+  .pomoc-overlay.on .pomoc-plansza{transform:translate(-50%,-50%)}
+
+  .pomoc-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 28px 14px;border-bottom:1px solid rgba(201,162,39,.2);
+  }
+  .pomoc-head .pomoc-tytul{
+    font-family:'Fraunces',serif;font-size:22px;font-weight:600;
+    color:var(--gold-soft);text-shadow:0 0 10px rgba(201,162,39,.25);
+  }
+  .pomoc-x{
+    width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+    background:none;border:1px solid rgba(243,234,214,.2);border-radius:8px;
+    color:var(--parchment);cursor:pointer;font-size:16px;transition:all .2s ease;
+  }
+  .pomoc-x:hover{border-color:var(--gold);background:rgba(201,162,39,.1)}
+  .pomoc-body{
+    padding:22px 28px 34px;
+    font-family:'Literata',serif;font-size:16px;line-height:1.75;
+    color:var(--parchment-dim);
+  }
+  .pomoc-body p{margin:0 0 14px}
+  .pomoc-body b{color:var(--parchment)}
+  .pomoc-body em{color:var(--gold-soft);font-style:italic}
+  .pomoc-linia{
+    height:1px;margin:20px 0;
+    background:linear-gradient(90deg,transparent,rgba(201,162,39,.3),transparent);
+  }
+  .pomoc-drzewko{
+    font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;
+    color:#d8dae0;background:rgba(0,0,0,.35);
+    border:1px solid rgba(201,162,39,.2);border-radius:10px;
+    padding:16px 18px;margin:14px 0;white-space:pre;overflow-x:auto;
+  }
+  .pomoc-drzewko .cz{color:#e0703a;font-weight:600}
+  .pomoc-drzewko .zl{color:var(--gold-soft);font-weight:600}
+  .pomoc-drzewko .szare{color:#7a7f88;font-size:12px}
+  .pomoc-kod{
+    font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.6;
+    color:#e8e4d8;background:rgba(0,0,0,.4);
+    border-left:3px solid #e0703a;border-radius:0 8px 8px 0;
+    padding:12px 16px;margin:10px 0 18px;white-space:pre;overflow-x:auto;
+  }
+
   @media(max-width:640px){
     .row2,.row3{grid-template-columns:1fr}
     .wrap{padding:18px 16px 70px}
@@ -356,7 +429,7 @@ h1,h2{font-family:'Fraunces',serif;font-weight:600;letter-spacing:.01em}
       <h2>Miejscowość</h2>
       <p class="hint">Kliknij na mapie miejsce, gdzie leży miejscowość (żółta kropka) — współrzędne zapiszą się same. Potem uzupełnij dane.</p>
 
-      <label>Nazwa miejscowości</label>
+      <label>Nazwa miejscowości<span class="pomoc-znak" onclick="pokazPomoc('nazwa-miejscowosci')">?</span></label>
       <input type="text" id="m-nazwa" oninput="odswiezSlugM()" placeholder="np. Siedliszcze">
       <div class="slug-preview" id="m-slug-prev"></div>
 
@@ -366,7 +439,7 @@ h1,h2{font-family:'Fraunces',serif;font-weight:600;letter-spacing:.01em}
         <div><label>Województwo</label><input type="text" id="m-woj" placeholder="lubelskie"></div>
       </div>
 
-      <label>Nazwa pliku zdjęcia <span class="opt">— opcjonalnie, wrzucisz je do folderu miejscowości</span></label>
+      <label>Nazwa pliku zdjęcia<span class="pomoc-znak" onclick="pokazPomoc('nazwa-zdjecia')">?</span> <span class="opt">— opcjonalnie, wrzucisz je do folderu miejscowości</span></label>
       <input type="text" id="m-zdjecie" placeholder="np. siedliszcze.jpg">
       <div class="filehint">wpisz samą nazwę pliku; trafi do folderu Twojej miejscowości, obok dane.json</div>
 
@@ -374,7 +447,7 @@ h1,h2{font-family:'Fraunces',serif;font-weight:600;letter-spacing:.01em}
       <textarea id="m-opis" placeholder="Krótki opis miejscowości…"></textarea>
 
       <div class="opiekun-sekcja">
-        <label>Opiekun miejscowości <span class="opt">— osoba lub instytucja odpowiedzialna za tę miejscowość</span></label>
+        <label>Opiekun miejscowości<span class="pomoc-znak" onclick="pokazPomoc('opiekun')">?</span> <span class="opt">— osoba lub instytucja odpowiedzialna za tę miejscowość</span></label>
         <input type="text" id="m-opiekun-imie" placeholder="np. Biblioteka Publiczna w Siedliszczu / Jan Kowalski">
         <input type="text" id="m-opiekun-kontakt" placeholder="e-mail lub telefon, np. biblioteka@siedliszcze.pl">
         <div class="filehint">te dane zobaczą inni po kliknięciu w Twoją miejscowość na mapie — to do nich będą zgłaszać nowych poetów</div>
@@ -445,6 +518,128 @@ h1,h2{font-family:'Fraunces',serif;font-weight:600;letter-spacing:.01em}
 </div>
 
 <script>
+/* ===================== SAMOUCZEK ===================== */
+const pomocTresci = {
+  'nazwa-miejscowosci': {
+    tytul: 'Nazwa miejscowości',
+    body: '<p>Wpisz pełną, oficjalną nazwę swojej miejscowości — z polskimi znakami i wielką literą. Dla przykładu użyjmy miejscowości <b>Księżyc</b>.</p>'
+      + '<p>Pod polem pojawi się automatycznie <em>slug</em> — czyli uproszczona nazwa: małe litery, bez polskich znaków, spacje zamienione na myślniki. Z „Księżyc" powstanie <em>ksiezyc</em>. Slug tworzy się sam — nie musisz nic robić.</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p><b>Ta sama nazwa pojawia się w trzech miejscach</b> — raz jako slug, raz jako pełna nazwa. To najważniejsza rzecz do zapamiętania:</p>'
+      + '<pre class="pomoc-drzewko">'
+      + '<span class="zl">wierszarium/</span>          <span class="szare">← nazwa twojego repozytorium</span>\n├── index.html\n├── <span class="cz">miejscowosci.json</span>   <span class="szare">← tu wpisujesz slug</span>\n└── dane/\n    └── <span class="cz">ksiezyc/</span>          <span class="szare">← folder = slug</span>\n        ├── <span class="cz">dane.json</span>   <span class="szare">← w środku pełna nazwa</span>\n        ├── zdjecia.jpg\n        └── audio.mp3'
+      + '</pre>'
+      + '<p style="margin-top:18px"><b>1. W pliku <span style="color:#e0703a">miejscowosci.json</span></b> — wpisujesz <b>slug</b>, czyli <b>bez polskich znaków</b>, małymi literami:</p>'
+      + '<pre class="pomoc-kod">[\n  "ksiezyc"\n]</pre>'
+      + '<p><b>2. Folder <span style="color:#e0703a">ksiezyc/</span></b> (w katalogu <em>dane/</em>) — jego nazwa to również <b>slug</b>, tak samo <b>bez polskich znaków</b>:</p>'
+      + '<pre class="pomoc-kod">dane/ksiezyc/</pre>'
+      + '<p><b>3. W pliku <span style="color:#e0703a">dane.json</span></b> (leży w tym folderze) — w polu <em>nazwa</em> wpisujesz <b>pełną nazwę z polskimi znakami</b>:</p>'
+      + '<pre class="pomoc-kod">"nazwa": "Księżyc"</pre>'
+      + '<p style="font-size:14px;opacity:.8"><b>W skrócie:</b> nazwa folderu i wpis w <em>miejscowosci.json</em> to slug — <b>ksiezyc</b> (bez polskich znaków). Tylko w środku <em>dane.json</em>, w polu nazwa, zapisujesz pełną, ładną nazwę — <b>Księżyc</b> (z polskimi znakami).</p>'
+  },
+  'nazwa-zdjecia': {
+    tytul: 'Nazwa pliku zdjęcia',
+    body: '<p>Wpisz nazwę pliku ze zdjęciem — <b>koniecznie z końcówką</b> <em>.jpg</em> (np. <b>ksiezyc.jpg</b>). Bez tej końcówki program nie rozpozna zdjęcia.</p>'
+      + '<p>Najlepiej używać prostych nazw: małe litery, bez polskich znaków i spacji (np. <em>rynek.jpg</em>, <em>kosciol.jpg</em>).</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p><b>Zanim wpiszesz nazwę — przygotuj zdjęcie</b> w naszym edytorze:</p>'
+      + '<p>1. Otwórz <a href=\"https://wierszarium.github.io/edytor/\" target=\"_blank\" style=\"color:var(--gold);font-weight:600\">Edytor zdjęć</a> (otworzy się w nowej karcie).<br>2. Wybierz zakładkę <b>Miejscowość</b>, wrzuć swoje zdjęcie i ustaw, jak ma wyglądać.<br>3. Zapisz gotowy plik na swój komputer.<br>4. Wrzuć go do folderu swojej miejscowości (obok <em>dane.json</em>).</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p><b>Gdzie ląduje zdjęcie:</b></p>'
+      + '<pre class="pomoc-drzewko">'
+      + '<span class="zl">wierszarium/</span>          <span class="szare">← nazwa twojego repozytorium</span>\n├── index.html\n├── miejscowosci.json\n└── dane/\n    └── <span class="zl">ksiezyc/</span>\n        ├── dane.json\n        ├── <span class="cz">ksiezyc.jpg</span>   <span class="szare">← tutaj ląduje zdjęcie</span>\n        └── audio.mp3'
+      + '</pre>'
+      + '<p style="font-size:14px;opacity:.8">Nazwa, którą wpiszesz tutaj, musi <b>dokładnie</b> pasować do nazwy pliku wrzuconego do folderu. Jeśli plik nazywa się <em>ksiezyc.jpg</em>, to w polu też wpisz <em>ksiezyc.jpg</em>.</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p style="color:var(--gold-soft);font-weight:600;font-size:17px">💡 Super alternatywa — darmowy transfer</p>'
+      + '<p>Nie chcesz trzymać plików u siebie? Możesz wrzucić zdjęcia i nagrania na <b>dowolny darmowy hosting plików</b> (np. GitHub, Cloudflare, albo inny hosting obrazów), <b>skopiować gotowy adres</b> pliku i wkleić go <b>dokładnie</b> w to pole — zamiast samej nazwy.</p>'
+      + '<pre class="pomoc-kod">https://twoj-hosting.pl/ksiezyc.jpg</pre>'
+      + '<p>Program rozpozna, że to gotowy link, i pobierze zdjęcie prosto z tego adresu. Dzięki temu <b>nie musisz wrzucać pliku do swojego folderu</b> — wystarczy poprawny link.</p>'
+      + '<p style="font-size:14px;opacity:.8">To samo działa dla nagrań audio (mp3). Ważne: wklejaj <b>pełny adres</b> zaczynający się od <em>https://</em>.</p>'
+  },
+  'nazwa-zdjecia-artysta': {
+    tytul: 'Zdjęcie poety',
+    body: '<p>Wpisz nazwę pliku ze zdjęciem poety — <b>koniecznie z końcówką</b> <em>.jpg</em> (np. <b>jan-kowalski.jpg</b>). Bez tej końcówki program nie rozpozna zdjęcia.</p>'
+      + '<p>Najlepiej używać prostych nazw: małe litery, bez polskich znaków i spacji (np. <em>jan-kowalski.jpg</em>).</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p><b>Zanim wpiszesz nazwę — przygotuj zdjęcie</b> w naszym edytorze:</p>'
+      + '<p>1. Otwórz <a href="https://wierszarium.github.io/edytor/" target="_blank" style="color:var(--gold);font-weight:600">Edytor zdjęć</a> (otworzy się w nowej karcie).<br>2. Wybierz zakładkę <b>Artysta</b>, wrzuć zdjęcie poety i ustaw, jak ma wyglądać.<br>3. Zapisz gotowy plik na swój komputer.<br>4. Wrzuć go do folderu swojej miejscowości (obok <em>dane.json</em>).</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p><b>Gdzie ląduje zdjęcie:</b></p>'
+      + '<pre class="pomoc-drzewko">'
+      + '<span class="zl">wierszarium/</span>          <span class="szare">← nazwa twojego repozytorium</span>\n├── index.html\n├── miejscowosci.json\n└── dane/\n    └── <span class="zl">ksiezyc/</span>\n        ├── dane.json\n        ├── <span class="cz">jan-kowalski.jpg</span>   <span class="szare">← tutaj ląduje zdjęcie poety</span>\n        └── audio.mp3'
+      + '</pre>'
+      + '<p style="font-size:14px;opacity:.8">Nazwa, którą wpiszesz tutaj, musi <b>dokładnie</b> pasować do nazwy pliku wrzuconego do folderu. Wszystkie zdjęcia (miejscowości, poetów, okładki) trafiają do <b>tego samego folderu</b> miejscowości.</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p style="color:var(--gold-soft);font-weight:600;font-size:17px">💡 Super alternatywa — darmowy transfer</p>'
+      + '<p>Nie chcesz trzymać plików u siebie? Możesz wrzucić zdjęcia i nagrania na <b>dowolny darmowy hosting plików</b> (np. GitHub, Cloudflare, albo inny hosting obrazów), <b>skopiować gotowy adres</b> pliku i wkleić go <b>dokładnie</b> w to pole — zamiast samej nazwy.</p>'
+      + '<pre class="pomoc-kod">https://twoj-hosting.pl/plik.jpg</pre>'
+      + '<p>Program rozpozna, że to gotowy link, i pobierze plik prosto z tego adresu. Dzięki temu <b>nie musisz wrzucać go do swojego folderu</b> — wystarczy poprawny link.</p>'
+      + '<p style="font-size:14px;opacity:.8">To samo działa dla nagrań audio (mp3). Ważne: wklejaj <b>pełny adres</b> zaczynający się od <em>https://</em>.</p>'
+  },
+  'nazwa-okladki': {
+    tytul: 'Okładka tomiku',
+    body: '<p>Wpisz nazwę pliku z okładką tomiku — <b>koniecznie z końcówką</b> <em>.jpg</em> (np. <b>cisza-po-drodze.jpg</b>). Bez tej końcówki program nie rozpozna zdjęcia.</p>'
+      + '<p>Najlepiej używać prostych nazw: małe litery, bez polskich znaków i spacji.</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p><b>Zanim wpiszesz nazwę — przygotuj okładkę</b> w naszym edytorze:</p>'
+      + '<p>1. Otwórz <a href="https://wierszarium.github.io/edytor/" target="_blank" style="color:var(--gold);font-weight:600">Edytor zdjęć</a> (otworzy się w nowej karcie).<br>2. Wybierz zakładkę <b>Okładka</b>, wrzuć obraz i ustaw, jak ma wyglądać.<br>3. Zapisz gotowy plik na swój komputer.<br>4. Wrzuć go do folderu swojej miejscowości (obok <em>dane.json</em>).</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p><b>Gdzie ląduje okładka:</b></p>'
+      + '<pre class="pomoc-drzewko">'
+      + '<span class="zl">wierszarium/</span>          <span class="szare">← nazwa twojego repozytorium</span>\n├── index.html\n├── miejscowosci.json\n└── dane/\n    └── <span class="zl">ksiezyc/</span>\n        ├── dane.json\n        ├── <span class="cz">cisza-po-drodze.jpg</span>   <span class="szare">← okładka tomiku</span>\n        └── audio.mp3'
+      + '</pre>'
+      + '<p style="font-size:14px;opacity:.8">Nazwa w polu musi <b>dokładnie</b> pasować do nazwy pliku w folderze.</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p style="color:var(--gold-soft);font-weight:600;font-size:17px">💡 Super alternatywa — darmowy transfer</p>'
+      + '<p>Nie chcesz trzymać plików u siebie? Możesz wrzucić zdjęcia i nagrania na <b>dowolny darmowy hosting plików</b> (np. GitHub, Cloudflare, albo inny hosting obrazów), <b>skopiować gotowy adres</b> pliku i wkleić go <b>dokładnie</b> w to pole — zamiast samej nazwy.</p>'
+      + '<pre class="pomoc-kod">https://twoj-hosting.pl/plik.jpg</pre>'
+      + '<p>Program rozpozna, że to gotowy link, i pobierze plik prosto z tego adresu. Dzięki temu <b>nie musisz wrzucać go do swojego folderu</b> — wystarczy poprawny link.</p>'
+      + '<p style="font-size:14px;opacity:.8">To samo działa dla nagrań audio (mp3). Ważne: wklejaj <b>pełny adres</b> zaczynający się od <em>https://</em>.</p>'
+  },
+  'nazwa-audio': {
+    tytul: 'Nagranie audio (mp3)',
+    body: '<p>Jeśli masz nagranie wiersza — recytację, czytanie autora — możesz je dołączyć. Wpisz nazwę pliku <b>koniecznie z końcówką</b> <em>.mp3</em> (np. <b>nad-zalewem.mp3</b>).</p>'
+      + '<p>Najlepiej proste nazwy: małe litery, bez polskich znaków i spacji. To pole jest opcjonalne — jeśli nie masz nagrania, zostaw puste.</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p>Nagranie <b>nie przechodzi przez edytor zdjęć</b> — to plik dźwiękowy. Wystarczy, że masz gotowy plik <em>.mp3</em> (np. nagrany telefonem lub programem do nagrywania) i wrzucisz go do folderu miejscowości.</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p><b>Gdzie ląduje nagranie:</b></p>'
+      + '<pre class="pomoc-drzewko">'
+      + '<span class="zl">wierszarium/</span>          <span class="szare">← nazwa twojego repozytorium</span>\n├── index.html\n├── miejscowosci.json\n└── dane/\n    └── <span class="zl">ksiezyc/</span>\n        ├── dane.json\n        ├── zdjecia.jpg\n        └── <span class="cz">nad-zalewem.mp3</span>   <span class="szare">← tutaj ląduje nagranie</span>'
+      + '</pre>'
+      + '<p style="font-size:14px;opacity:.8">Nazwa w polu musi <b>dokładnie</b> pasować do nazwy pliku wrzuconego do folderu. Wszystkie pliki — zdjęcia i nagrania — trafiają do <b>tego samego folderu</b> miejscowości.</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p style="color:var(--gold-soft);font-weight:600;font-size:17px">💡 Super alternatywa — darmowy transfer</p>'
+      + '<p>Nie chcesz trzymać nagrania u siebie? Możesz wrzucić plik mp3 na <b>dowolny darmowy hosting plików</b> (np. GitHub, Cloudflare), <b>skopiować gotowy adres</b> i wkleić go <b>dokładnie</b> w to pole — zamiast samej nazwy.</p>'
+      + '<pre class="pomoc-kod">https://twoj-hosting.pl/nad-zalewem.mp3</pre>'
+      + '<p>Program rozpozna, że to gotowy link, i odtworzy nagranie prosto z tego adresu. Dzięki temu <b>nie musisz wrzucać go do swojego folderu</b> — wystarczy poprawny link.</p>'
+      + '<p style="font-size:14px;opacity:.8">Ważne: wklejaj <b>pełny adres</b> zaczynający się od <em>https://</em>.</p>'
+  },
+  'opiekun': {
+    tytul: 'Opiekun miejscowości',
+    body: '<p>To pole wypełnia <b>osoba, która jako pierwsza dodaje daną miejscowość</b> do sieci — biblioteka, dom kultury, stowarzyszenie albo pojedynczy poeta. Ta osoba staje się <b>opiekunem (administratorem)</b> tej miejscowości.</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p><b>Dlaczego to ważne?</b></p>'
+      + '<p>Każda miejscowość może istnieć w sieci <b>tylko raz</b>. Nikt inny nie może dodać drugi raz tej samej miejscowości — powstałby konflikt (dwie takie same nazwy).</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p><b>Co z innymi poetami z tej samej miejscowości?</b></p>'
+      + '<p>Poeta, który chce dołączyć swoje wiersze do już istniejącej miejscowości, <b>nie tworzy jej od nowa</b>. Zgłasza się do opiekuna tej miejscowości. Opiekun dopisuje nowego poetę do <b>swojego</b> pliku <em>dane.json</em> — po prostu dodaje kolejnego artystę i aktualizuje swoje dane.</p>'
+      + '<p style="font-size:14px;opacity:.8">Dzięki temu jedna miejscowość ma jednego gospodarza, który pilnuje porządku, a wszyscy jej poeci są w jednym miejscu. Kontakt opiekuna (e-mail lub telefon) pozwala innym poetom łatwo się z nim skontaktować.</p>'
+  }
+};
+
+function pokazPomoc(id){
+  const dane = pomocTresci[id];
+  if(!dane) return;
+  document.getElementById('pomoc-tytul').textContent = dane.tytul;
+  document.getElementById('pomoc-body').innerHTML = dane.body;
+  document.getElementById('pomoc-overlay').classList.add('on');
+}
+function zamknijPomoc(){
+  document.getElementById('pomoc-overlay').classList.remove('on');
+}
+
 /* ===================== PRZEŁĄCZANIE EKRANÓW ===================== */
 let mapaZainicjowana = false;
 function pokazEkran(nazwa){
@@ -594,7 +789,7 @@ function renderArtysci(){
           <input type="text" value="${esc(a.lata)}" oninput="setArt('${a._id}','lata',this.value)" placeholder="np. 1932–2011 albo ur. 1978">
         </div>
         <div>
-          <label>Nazwa pliku zdjęcia <span class="opt">— opcjonalnie</span></label>
+          <label>Nazwa pliku zdjęcia<span class="pomoc-znak" onclick="pokazPomoc('nazwa-zdjecia-artysta')">?</span> <span class="opt">— opcjonalnie</span></label>
           <input type="text" value="${esc(a.zdjecie)}" oninput="setArt('${a._id}','zdjecie',this.value)" placeholder="np. halina-wierzbicka.jpg">
         </div>
       </div>
@@ -787,7 +982,7 @@ function blokTomiku(a,t,ti){
         <input type="text" value="${esc(t.tytul)}" oninput="setTomik('${a._id}','${t._id}','tytul',this.value)" placeholder="np. Cisza po drodze">
       </div>
       <div>
-        <label>Nazwa pliku okładki <span class="opt">— opcjonalnie</span></label>
+        <label>Nazwa pliku okładki<span class="pomoc-znak" onclick="pokazPomoc('nazwa-okladki')">?</span> <span class="opt">— opcjonalnie</span></label>
         <input type="text" value="${esc(t.okladka)}" oninput="setTomik('${a._id}','${t._id}','okladka',this.value)" placeholder="np. cisza-po-drodze.jpg">
       </div>
     </div>
@@ -961,7 +1156,7 @@ function blokWiersza(a, t, w, wi){
         <input type="text" value="${esc(w.data_powstania)}" oninput="setW('${w._id}','data_powstania',this.value)" placeholder="np. 1987">
       </div>
       <div>
-        <label>Nazwa pliku audio <span class="opt">— opcjonalnie</span></label>
+        <label>Nazwa pliku audio<span class="pomoc-znak" onclick="pokazPomoc('nazwa-audio')">?</span> <span class="opt">— opcjonalnie</span></label>
         <input type="text" value="${esc(w.audio)}" oninput="setW('${w._id}','audio',this.value)" placeholder="np. nad-zalewem.mp3">
       </div>
     </div>
@@ -1205,5 +1400,16 @@ function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').repla
 
 
 </script>
+<!-- ===== SAMOUCZEK — plansza ===== -->
+<div class="pomoc-overlay" id="pomoc-overlay" onclick="zamknijPomoc()">
+  <div class="pomoc-plansza" onclick="event.stopPropagation()">
+    <div class="pomoc-head">
+      <span class="pomoc-tytul" id="pomoc-tytul"></span>
+      <button class="pomoc-x" onclick="zamknijPomoc()" aria-label="zamknij">✕</button>
+    </div>
+    <div class="pomoc-body" id="pomoc-body"></div>
+  </div>
+</div>
+
 </body>
 </html>
