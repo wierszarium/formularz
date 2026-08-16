@@ -630,6 +630,32 @@ const pomocTresci = {
       + '<p><b>Co z innymi poetami z tej samej miejscowości?</b></p>'
       + '<p>Poeta, który chce dołączyć swoje wiersze do już istniejącej miejscowości, <b>nie tworzy jej od nowa</b>. Zgłasza się do opiekuna tej miejscowości. Opiekun dopisuje nowego poetę do <b>swojego</b> pliku <em>dane.json</em> — po prostu dodaje kolejnego artystę i aktualizuje swoje dane.</p>'
       + '<p style="font-size:14px;opacity:.8">Dzięki temu jedna miejscowość ma jednego gospodarza, który pilnuje porządku, a wszyscy jej poeci są w jednym miejscu. Kontakt opiekuna (e-mail lub telefon) pozwala innym poetom łatwo się z nim skontaktować.</p>'
+  },
+  'zapisz-tomik': {
+    tytul: 'Zapisz tomik',
+    body: '<p>Ten przycisk zapisuje <b>cały tomik</b> jako osobny plik — razem z okładką, miejscem na mapie i wszystkimi wierszami (treść, data, źródło, nagrania).</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p><b>Do czego się przydaje?</b></p>'
+      + '<p>📄 Możesz go łatwo <b>przenieść do innego formularza zgłoszeniowego</b> — np. gdy ten sam poeta ma tomiki w kilku miejscowościach.</p>'
+      + '<p>➕ Możesz <b>uzupełnić czyjąś twórczość</b> tomikiem nadesłanym przez inną osobę — wystarczy, że przyśle Ci plik tomiku, a Ty wczytasz go przyciskiem Wczytaj tomik.</p>'
+      + '<p>✍️ Możesz go też <b>otworzyć w Wierszowniku</b> — naszym narzędziu do pisania i porządkowania wierszy.</p>'
+      + '<p style="font-size:14px;opacity:.8">Plik zapisze się jako <em>tomik-nazwa.json</em>. Przechowaj go u siebie albo prześlij komuś — w każdej chwili można go wczytać z powrotem.</p>'
+  },
+  'wczytaj-tomik': {
+    tytul: 'Wczytaj tomik',
+    body: '<p>Tym przyciskiem <b>wczytasz gotowy tomik z pliku</b> i dołączysz go do wybranego poety. Tomik doda się do jego twórczości razem z okładką, miejscem na mapie i wszystkimi wierszami.</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p><b>Skąd wziąć taki plik?</b></p>'
+      + '<p>📨 Możesz wczytać tomik <b>przesłany przez inną osobę</b> — jeśli ktoś przygotował swój tomik i przysłał Ci plik, po prostu go tutaj wskaż.</p>'
+      + '<p>📝 Działają tomiki utworzone <b>w formularzu zgłoszeniowym</b> (przyciskiem „Zapisz tomik") oraz <b>w Wierszowniku</b> (przyciskiem „Pobierz tomik").</p>'
+      + '<p style="font-size:14px;opacity:.8">Wczytany tomik <b>dokłada się</b> do poety — nie kasuje tego, co już masz. Możesz w ten sposób złożyć twórczość z wielu źródeł w jednym miejscu.</p>'
+  },
+  'dodaj-tomik': {
+    tytul: 'Dodaj tomik',
+    body: '<p>Ten przycisk dodaje <b>nowy, pusty tomik</b> do wybranego poety — gotowy do ręcznego wypełnienia.</p>'
+      + '<p>Po kliknięciu pojawi się czysty tomik, w którym sam wpisujesz wszystko od początku: <b>tytuł tomiku</b>, okładkę, miejsce na mapie oraz kolejne <b>wiersze</b> z ich treścią.</p>'
+      + '<div class="pomoc-linia"></div>'
+      + '<p style="font-size:14px;opacity:.8">Jeśli zamiast wpisywać ręcznie chcesz <b>wczytać gotowy tomik z pliku</b> (np. przesłany przez kogoś albo utworzony w Wierszowniku) — użyj przycisku obok: „Wczytaj tomik".</p>'
   }
 };
 
@@ -853,8 +879,8 @@ function renderTworczosc(){
     const addTomik = document.createElement('div');
     addTomik.className='add-line sep-top';
     addTomik.innerHTML = `
-      <button class="btn mini" onclick="dodajTomik('${a._id}')">➕ Dodaj tomik</button>
-      <button class="btn mini" onclick="document.getElementById('wczytaj-tomik-${a._id}').click()">📥 Wczytaj tomik .json</button>
+      <button class="btn mini" onclick="dodajTomik('${a._id}')">➕ Dodaj tomik</button><span class="pomoc-znak" onclick="pokazPomoc('dodaj-tomik')">?</span>
+      <button class="btn mini" onclick="document.getElementById('wczytaj-tomik-${a._id}').click()">📥 Wczytaj tomik .json</button><span class="pomoc-znak" onclick="pokazPomoc('wczytaj-tomik')">?</span>
       <input type="file" id="wczytaj-tomik-${a._id}" accept=".json" class="hidden" onchange="wczytajTomikDoArtysty('${a._id}', this)">
     `;
     wrap.appendChild(addTomik);
@@ -1024,8 +1050,8 @@ function blokTomiku(a,t,ti){
   el.innerHTML = `
     <div class="sub-head">
       <span class="nm">📖 Tomik ${ti+1}${t.tytul?': '+esc(t.tytul):''} <span class="tag">tomik</span></span>
-      <span style="display:flex;gap:8px">
-        <button class="btn mini" onclick="zapiszTomik('${a._id}','${t._id}')">💾 Zapisz tomik</button>
+      <span style="display:flex;gap:8px;align-items:center">
+        <button class="btn mini" onclick="zapiszTomik('${a._id}','${t._id}')">💾 Zapisz tomik</button><span class="pomoc-znak" onclick="pokazPomoc('zapisz-tomik')">?</span>
         <button class="btn mini danger" onclick="usunTomik('${a._id}','${t._id}')">Usuń tomik</button>
       </span>
     </div>
