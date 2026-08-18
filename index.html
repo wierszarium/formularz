@@ -289,6 +289,13 @@
   .kafel-opis{font-size:13.5px;line-height:1.65;color:var(--parchment-dim);margin:0 2px 10px;padding-left:2px}
   .kafel-opis b{color:var(--gold-soft)}
   .kafel-opis code{font-family:'JetBrains Mono',monospace;font-size:.88em;background:rgba(0,0,0,.3);padding:1px 5px;border-radius:4px;color:var(--gold-soft)}
+  .kafel-ramka{margin:2px 2px 14px;padding:16px 18px;background:rgba(201,162,39,.06);border:1px solid rgba(201,162,39,.35);border-radius:10px}
+  .kafel-ramka.druga{margin-top:16px;background:rgba(90,140,200,.06);border-color:rgba(120,160,210,.35);border-left:4px solid #6a9bd0;border-radius:0 10px 10px 0}
+  .kafel-ramka p{font-size:13.5px;line-height:1.65;color:var(--parchment-dim);margin:0 0 10px}
+  .kafel-ramka p:last-child{margin-bottom:0}
+  .kafel-ramka b{color:var(--gold-soft)}
+  .kafel-ramka.druga b{color:#bcd7f0}
+  .kafel-ramka code{font-family:'JetBrains Mono',monospace;font-size:.88em;background:rgba(0,0,0,.3);padding:1px 5px;border-radius:4px;color:var(--gold-soft)}
   .menu-kafle{display:flex;flex-direction:column;gap:16px}
   .kafel{
     display:flex;align-items:center;gap:20px;text-align:left;
@@ -395,18 +402,24 @@ h1,h2{font-family:'Fraunces',serif;font-weight:600;letter-spacing:.01em}
     <div class="menu-tytul">Narzędzia</div>
     <div class="menu-sub">Pod Wielkim Dachem Nieba</div>
     <div class="menu-kafle">
-      <p class="kafel-opis">To jest <b>główny formularz zgłoszeniowy</b> — od niego zaczynasz. Wpisujesz tutaj wszystkie dane oraz wiersze.</p>
+      <p class="kafel-opis">To jest <b>główny formularz zgłoszeniowy</b> — od niego zaczynasz. Tworzysz nazwę miejscowości — wpisujesz się jako administrator tej miejscowości. Dopisujesz pisarzy, ich tomiki i wiersze. Na koniec otrzymujesz plik <code>dane.json</code> — w tym pliku masz wszystko, co potrzeba, związane z tą miejscowością.</p>
       <button class="kafel" onclick="pokazEkran('edytor')">
         <span class="iko">🗺️</span>
         <span><span class="nm">Formularz zgłoszeniowy</span>
         <span class="ds">Dodaj miejscowość, poetów, tomiki i wiersze.</span></span>
       </button>
-      <p class="kafel-opis">To jest <b>specjalny kreator, który wykonuje za Ciebie całą trudną robotę</b> — składanie gotowej strony internetowej. Sam nie musisz tworzyć żadnych folderów ani nic ręcznie układać.<br><br>Wrzucasz tutaj tylko dwie kluczowe rzeczy. <b>Po pierwsze</b> — nazwę głównego folderu, czyli nazwę repozytorium Twojej strony internetowej. <b>Po drugie</b> — kolejno wszystkie wypełnione formularze zgłoszeniowe, czyli te pliki <code>dane.json</code>, które pobrałeś w edytorze wyżej. Każdy taki plik to jedna miejscowość.<br><br>Resztą zajmuje się program. <b>Sam tworzy wszystkie foldery</b>, układa je we właściwej kolejności, buduje listę miejscowości i <b>podpowiada Ci, czego jeszcze brakuje</b>.</p>
+      <div class="kafel-ramka">
+        <p>Na swojej stronie internetowej możesz mieć <b>wiele miejscowości</b> zapisanych w ten sposób. Teraz otwórz program <b>Kreator projektu</b> i wczytaj do niego jedną lub więcej miejscowości — Kreator zrobi za Ciebie <b>wszystkie pliki i foldery</b>, gotowe do wrzucenia na stronę. Podpowie Ci także, jakie pliki są brakujące.</p>
+      </div>
       <a class="kafel" href="https://wierszarium.github.io/kreator/" target="_blank" style="text-decoration:none">
         <span class="iko">📦</span>
         <span><span class="nm">Kreator projektu</span>
         <span class="ds">buduje gotową paczkę Twojej mapy poezji</span></span>
       </a>
+      <div class="kafel-ramka druga">
+        <p><b>A co, jak masz już działającą stronę</b> i chcesz dodać kolejne miejscowości?</p>
+        <p>Jeśli chcesz nadal łączyć wszystko w Kreatorze — pobierz z GitHub całe repozytorium w postaci ZIP. Wczytaj cały ZIP, potem dodaj kolejne swoje miejscowości (czyli pliki <code>dane.json</code>). Kreator wszystko znowu połączy w jedną całość.</p>
+      </div>
     </div>
   </div>
 </div>
